@@ -1,0 +1,6 @@
+[section1]
+opt_11 = val_11_default
+opt_12 = val_12_default
+[section2]
+opt_21 = val_21_default
+opt_22 = val_22_default
