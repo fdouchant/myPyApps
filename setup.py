@@ -1,13 +1,14 @@
 from distutils.core import setup
 
-spip_url = "http://fabricedouchant.com/spip.php?article52&lang=en"
 try:
     from html2rest import html2rest
     from StringIO import StringIO
+    import urllib
     
     # read content of article (plain html template) and convert to restructuredText for long_description
     stringIO = StringIO()
-    html2rest(open(spip_url+'&page=article_plain_html').read(), writer=stringIO, preprocess=lambda html, encoding: html.replace('<code', '<pre').replace('</code>', '</pre>'))
+    html_content = urllib.urlopen("http://fabricedouchant.com/spip.php?page=article_plain_html&id_article=52&lang=en").read()
+    html2rest(html_content, writer=stringIO, preprocess=lambda html, encoding: html.replace('<code', '<pre').replace('</code>', '</pre>'))
     long_desc = stringIO.getvalue()
 except ImportError:
     print "Couldn't load html2rest, use README.txt as description"
@@ -25,7 +26,7 @@ setup(
     license='GNU GPLv3',
     platforms = ["any"],
     keywords='framework tools',
-    url=spip_url,
+    url="http://fabricedouchant.com/spip.php?article52&lang=en",
     packages=['myPyApps'],
     package_data={
        'myPyApps': ['config/*.default'],
