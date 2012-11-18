@@ -8,9 +8,9 @@ try:
     # read content of article (plain html template) and convert to restructuredText for long_description
     stringIO = StringIO()
     html_content = urllib.urlopen("http://fabricedouchant.com/spip.php?page=article_plain_html&id_article=52&lang=en").read()
-    html2rest(html_content, writer=stringIO, preprocess=lambda html, encoding: html.replace('<code', '<pre').replace('</code>', '</pre>'))
+    html2rest(html_content, writer=stringIO)
     long_desc = stringIO.getvalue()
-except ImportError:
+except (ImportError, IOError):
     print "Couldn't load html2rest, use README.txt as description"
     long_desc = open('README.txt').read()
 
