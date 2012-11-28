@@ -60,9 +60,9 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
             # just try to use lowest level
             super(MySMTPHandler, self).handleError(*args, **kwargs)
             try:
-                logging.root.log(self.level - 1, "Error with SMTP handler. Please check your configuration file." +
-                                 " Or disable email 'mylogging.configure_logging(mail=False)'"
-                                 , exc_info=True)
+                import sys, traceback
+                print >> sys.stderr, ("Error with SMTP handler. Please check your configuration file. "
+                                  "Or disable email 'mylogging.configure_logging(mail=False)'.\n"), traceback.format_exc()
             except:
                 pass
         self.first_error = False
