@@ -2,7 +2,7 @@ import unittest
 
 import mypackage
 
-from myPyApps import myapp
+from myPyApps import myapp, mylogging
 
 class TestMyApp(unittest.TestCase):
 	
@@ -27,6 +27,15 @@ class TestMyApp(unittest.TestCase):
 				raise MyException("an exception")
 		test = MyFailingTest()
 		self.assertRaises(MyException, test.run, "Hello world !")
-
+		
+	def test_send_email(self):
+		class MyTest(myapp.MyApp):
+			def main(self, text):
+				logger = mylogging.getLogger(__name__)
+				logger.send_email("my message", "my subject")
+				return text		
+		test = MyTest()
+		self.assertEqual(test.run("Hello world !"), "Hello world !")
+		
 if __name__ == "__main__":
 	unittest.main()

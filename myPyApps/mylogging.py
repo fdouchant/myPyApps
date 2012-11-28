@@ -12,7 +12,7 @@ from myPyApps import mylogging
 mylogging.configure_logging()
 """
 
-import logging.config, StringIO
+import logging, logging.handlers, logging.config, StringIO
 
 from os.path import join, dirname
 
@@ -66,14 +66,51 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
             except:
                 pass
         self.first_error = False
+        
+    def emit_email(self, record, subject=None):
+        """
+        Send an email with record text and subject
+        """
+        # thread safe
+        self.acquire()
+        
+        # backup handler's instance variables
+        bkp_subject = self.subject
+        bkp_formatter = self.formatter
+        # change instance variables
+        self.subject = subject
+        self.formatter = logging.Formatter("%(message)s")
+        try:
+            self.emit(record)
+        finally:
+            self.subject = bkp_subject
+            self.formatter = bkp_formatter
+            self.release()
+     
+        
+class MyLogger(logging.Logger):
+    
+    def send_email(self, msg, subject=None):
+        """
+        Send an email to all SMTP handlers. Precisely to all handlers having emit_email method.    
+        """
+        record = logging.LogRecord(self.name, logging.INFO, None, None, msg, None, None)
+        for h in logging.root.handlers:
+            if hasattr(h, 'emit_email'):
+                h.emit_email(record, subject)
+
+# override some logging variables
+logging.setLoggerClass(MyLogger)
+logging.Logger.manager = logging.Manager(logging.root)
 
 def getLogger(name=None):
     """
-    Simple override of logging getLogger method.
+    Mimic default logging.getLogger implementation but uses MyLogger as class
     
     @param name: the name of the logger. If none, will be 'root'
     """
     return logging.getLogger(name)
+        
 
 def configure_logging(mail=True, config=myconfig.MyConfigParser('logging', config_path=myconfig.DEFAULT_PATH+[join(dirname(__file__), "config")])):
     """
