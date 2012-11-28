@@ -12,9 +12,11 @@ from ConfigParser import SafeConfigParser
 import os, sys, StringIO
 from os.path import dirname, abspath, join, isfile
 
+# will be used before mylogging initialization
 import logging
 LOGGER = logging.getLogger(__name__)
-logging.basicConfig(format="%(asctime)s:%(levelname)s:%(name)s:%(lineno)d:%(message)s", level=logging.DEBUG)
+# check if python is in debug mode (python -d) for logging level
+logging.basicConfig(format="%(asctime)s:%(levelname)s:%(name)s:%(lineno)d:%(message)s", level=sys.flags.debug and logging.DEBUG or logging.INFO)
 
 
 class MyConfigParserException(Exception):
@@ -84,6 +86,7 @@ class MyConfigParser(SafeConfigParser, object):
                 raise MyConfigParserException(self.name, "Couldn't clean section %r" % section)
         
         # use readfp to raise Exception if error while loading
+        LOGGER.info("[%s] Load DEFAULT file %r" % (self.name, self.default_path))
         self.readfp(open(self.default_path))
 
         LOGGER.debug("find and load user cfg files")
@@ -91,7 +94,7 @@ class MyConfigParser(SafeConfigParser, object):
         for path in reversed(self.config_path):
             full_path = join(path, self.cfg_filename)
             if isfile(full_path):
-                LOGGER.info("Load file %r for %r" % (full_path, self.name))
+                LOGGER.info("[%s] Load config file %r" % (self.name, full_path))
                 self.read(full_path)
         LOGGER.debug("done reload")
                 
@@ -123,7 +126,7 @@ class MyConfigParser(SafeConfigParser, object):
         Return a list of (name, value) pairs for each option in the given section.
         
         @section: the section to get options from.
-        @param with_default: if with_default is True then items from default will be used in result (same behaviour than configParser)
+        @param with_default: if with_default is True then items from default will be used in result (same behavior than configParser)
         If false, default items will be skipped
         """
         all_items = super(MyConfigParser, self).items(section)

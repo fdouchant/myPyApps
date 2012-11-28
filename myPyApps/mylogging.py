@@ -81,11 +81,11 @@ def configure_logging(mail=True, config=myconfig.MyConfigParser('logging', confi
     
     @param mail: set to False to disable email logging
     @param config: to give another way to find logging configuration. 
-    Default is to take logging.default and user defined logging.cfg in HOME, project, module dir
+    Default is to take logging.default and user defined logging.cfg in HOME, script, module dir
     """
     result = StringIO.StringIO()
     config.write(result)
-    # rewing io
+    # rewind io
     result.seek(0)
     try:
         logging.config.fileConfig(result, disable_existing_loggers=False)

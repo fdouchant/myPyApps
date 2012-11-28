@@ -18,14 +18,13 @@ if __name__ == "__main__":
 """
 
 
-import os, glob, logging, sys
+import os, glob, sys
 from os.path import basename, dirname, join, splitext
 
 from myPyApps import myconfig, mylogging
 
 mylogging.configure_logging()
 LOGGER = mylogging.getLogger(__name__)
-LOGGER.setLevel(logging.DEBUG)
 
 class MyApp():
     """
@@ -62,7 +61,7 @@ class MyApp():
                     LOGGER.info("Skip config %r" % conf)
                     continue
                 if conf in names:
-                    LOGGER.info("Duplicate default configuration for %r from %r" % (conf, f))
+                    LOGGER.warn("Duplicate default configuration for %r from %r" % (conf, f))
                     continue
                 LOGGER.info("Found configuration %r from %r" % (conf, f))
                 names.append(conf)
