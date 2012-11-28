@@ -33,7 +33,6 @@ args=(os.path.join(sys.path[0], 'logs', os.path.splitext(os.path.basename(sys.ar
 class=myPyApps.mylogging.MySMTPHandler
 level=ERROR
 formatter=myformatter
-args=('localhost', 'from@abc', ['user1@abc', 'user2@xyz'], os.path.splitext(os.path.basename(sys.argv[0]))[0], ('username', 'password'))
-
+args=('localhost', 'from@abc', ['user1@abc', 'user2@xyz'], '[%s] Logging email' % os.path.basename(sys.argv[0]), ('username', 'password'))
 [formatter_myformatter]
 format=%(asctime)s:%(levelname)s:%(name)s:%(lineno)d:%(message)s
