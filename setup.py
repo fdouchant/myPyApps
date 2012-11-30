@@ -11,7 +11,7 @@ try:
     html2rest(html_content, writer=stringIO)
     long_desc = stringIO.getvalue()
 except (ImportError, IOError):
-    print "Couldn't load html2rest, use README.txt as description"
+    print "Can't use spip article as description, use README.txt instead"
     long_desc = open('README.txt').read()
 
 import myPyApps
