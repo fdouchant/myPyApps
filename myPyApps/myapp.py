@@ -23,7 +23,6 @@ from os.path import basename, dirname, join, splitext
 
 from myPyApps import myconfig, mylogging
 
-mylogging.configure_logging()
 LOGGER = mylogging.getLogger(__name__)
 
 class MyApp():
@@ -34,15 +33,20 @@ class MyApp():
     Then run the application by calling the 'run()' function with the appropriate main arguments.
     """
     
-    def __init__(self, config_default=splitext(basename(sys.argv[0]))[0], config_path=myconfig.DEFAULT_PATH, config_filter=[]):
+    def __init__(self, config_default=splitext(basename(sys.argv[0]))[0], config_path=myconfig.DEFAULT_PATH, config_filter=[], logging_email=True):
         """
         This initialize the application by getting all configuration files
         
         @param config_default: name of the config that will be used as default. Default = name of the script (without any extension) 
         The default config will be directly available as a configParse object in the class as self.CONFIG and its default section will be available as a dictionary in self.DEFAULTS
         @param config_path: the configuration path. 
-        @param config_filter: the configuration filter. Found configuration that are listed in config_filter will be ignored. 
+        @param config_filter: the configuration filter. Found configuration that are listed in config_filter will be ignored.
+        @param logging_email: to turn on or off email logging 
         """
+        
+        # init logging
+        mylogging.configure_logging(logging_email)
+        
         module_path = join(dirname(__import__(self.__module__).__file__), 'config')
         LOGGER.debug("add module configuration folder %r" % module_path)
         self.config_path = config_path + [module_path]
@@ -73,6 +77,9 @@ class MyApp():
                 LOGGER.info("%r is the default configuration" % conf)
                 self.CONFIG = self.CONFIGS[name]
                 self.DEFAULTS = self.CONFIG.defaults()
+                
+        LOGGER.debug("Add logging in configs")
+        self.CONFIGS['logging'] = mylogging.DEFAULT_CONFIG
         
         if not self.CONFIGS:
             LOGGER.warn("No configuration loaded")

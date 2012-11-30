@@ -111,8 +111,9 @@ def getLogger(name=None):
     """
     return logging.getLogger(name)
         
+DEFAULT_CONFIG = myconfig.MyConfigParser('logging', config_path=myconfig.DEFAULT_PATH+[join(dirname(__file__), "config")])
 
-def configure_logging(mail=True, config=myconfig.MyConfigParser('logging', config_path=myconfig.DEFAULT_PATH+[join(dirname(__file__), "config")])):
+def configure_logging(mail=True, config=DEFAULT_CONFIG):
     """
     Method to use to init logging, then you may use logging usually.
     
@@ -120,6 +121,9 @@ def configure_logging(mail=True, config=myconfig.MyConfigParser('logging', confi
     @param config: to give another way to find logging configuration. 
     Default is to take logging.default and user defined logging.cfg in HOME, script, module dir
     """
+    # override default config for further use
+    MyLogger.default_config = config
+    
     result = StringIO.StringIO()
     config.write(result)
     # rewind io
