@@ -25,7 +25,7 @@ class TestMyApp(unittest.TestCase):
 		class MyFailingTest(myapp.MyApp):
 			def main(self, text):
 				raise MyException("an exception")
-		test = MyFailingTest(mail=False)
+		test = MyFailingTest(logging_email=False)
 		self.assertRaises(MyException, test.run, "Hello world !")
 		
 	def test_send_email(self):
