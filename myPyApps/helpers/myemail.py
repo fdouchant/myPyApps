@@ -1,4 +1,4 @@
-import smtplib, logging
+import smtplib, logging, string
 
 import mimetypes
 
@@ -27,10 +27,15 @@ def send_email(to_addrs, subject, text_body, html_body=None, attachements=[]):
     
     # needs a list even if one email address
     if not hasattr(to_addrs, '__iter__'):
-        to_addrs = [ to_addrs ]
+        LOGGER.debug("convert to_addrs has string")
+        if "," in to_addrs:
+            to_addrs = map(string.strip, to_addrs.split(','))
+            LOGGER.debug("to_addrs is a string containing list of emails")
+        else:
+            to_addrs = [ to_addrs ]
     
     # unpack logging smtp handler configuration
-    args = mylogging.DEFAULT_CONFIG.get('handler_mail', 'args')
+    args = mylogging.DEFAULT_CONFIG.get('handler_mail', 'args', raw=True)
     LOGGER.debug("using smtp configuration: " + args)
     
     eval_args = eval(args, vars(logging))
@@ -47,7 +52,7 @@ def send_email(to_addrs, subject, text_body, html_body=None, attachements=[]):
         LOGGER.debug("SMTP configuration uses default port " + str(port)) 
     
     # get credentials if any
-    username, password = None
+    username = password = None
     if others:
         username, password = others[0]
         LOGGER.debug("found username = %s, password = %s" % (username, password))

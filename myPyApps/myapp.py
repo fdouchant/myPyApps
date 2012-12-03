@@ -51,7 +51,7 @@ class MyApp():
         LOGGER.debug("add module configuration folder %r" % module_path)
         self.config_path = config_path + [module_path]
         
-        LOGGER.info("Initialize application with config_path %r and config_filter %r" % (self.config_path, config_filter))
+        LOGGER.debug("initialize application with config_path %r and config_filter %r" % (self.config_path, config_filter))
         self.CONFIGS = {}
         self.CONFIG = None
         self.DEFAULTS = None
@@ -67,14 +67,14 @@ class MyApp():
                 if conf in names:
                     LOGGER.warn("Duplicate default configuration for %r from %r" % (conf, f))
                     continue
-                LOGGER.info("Found configuration %r from %r" % (conf, f))
+                LOGGER.debug("found configuration %r from %r" % (conf, f))
                 names.append(conf)
         
         LOGGER.debug("load configurations")        
         for name in names:
             self.CONFIGS[name] = myconfig.MyConfigParser(name, config_path=self.config_path)
             if name == config_default:
-                LOGGER.info("%r is the default configuration" % conf)
+                LOGGER.debug("%r is the default configuration" % conf)
                 self.CONFIG = self.CONFIGS[name]
                 self.DEFAULTS = self.CONFIG.defaults()
                 
