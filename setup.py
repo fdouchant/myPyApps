@@ -29,6 +29,6 @@ setup(
     url="http://fabricedouchant.com/spip.php?article52&lang=en",
     packages=['myPyApps', 'myPyApps.helpers'],
     package_data={
-       'myPyApps': ['config/*.default'],
+       'myPyApps': ['config/*.default', 'logs/.empty'],
     },
 )
