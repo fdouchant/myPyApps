@@ -1,4 +1,4 @@
-import smtplib, logging, string
+import smtplib, logging, string, os
 
 import mimetypes
 
@@ -13,14 +13,14 @@ from myPyApps import mylogging
 
 LOGGER = mylogging.getLogger(__name__)
 
-def send_email(to_addrs, subject, text_body, html_body=None, attachements=[]):
+def send_email(to_addrs, subject, text_body=None, html_body=None, attachements=[]):
     """
     This helper is used to send an email than may be in text or html and have attachments.
     It uses mylogging SMTPHandler default configuration (section handler_mail, option args)
     
     @param to_addrs: recievers addresses
     @param subject: the email subject
-    @param text_body: email needs a text body
+    @param text_body: an optional text body
     @param html_body: an optional html body
     @param attachements: an optional list of files to attach to the email 
     """
@@ -64,7 +64,7 @@ def send_email(to_addrs, subject, text_body, html_body=None, attachements=[]):
         
         
     # create message container - the correct MIME type is multipart/alternative.
-    message = MIMEMultipart()
+    message = MIMEMultipart('alternative')
     message['Subject'] = subject
     message['To'] = ", ".join(to_addrs)
     message['From'] = from_addr
@@ -73,8 +73,10 @@ def send_email(to_addrs, subject, text_body, html_body=None, attachements=[]):
     # Attach parts into message container.
     # According to RFC 2046, the last part of a multipart message, in this case
     # the HTML message, is best and preferred.
-    part1 = MIMEText(text_body, 'plain')
-    message.attach(part1)
+    if text_body:
+        LOGGER.debug("add text body")
+        part1 = MIMEText(text_body, 'plain')
+        message.attach(part1)
     if html_body:
         LOGGER.debug("add html body")
         part2 = MIMEText(html_body, 'html')
@@ -84,7 +86,7 @@ def send_email(to_addrs, subject, text_body, html_body=None, attachements=[]):
     # add any attachements
     for attachement in attachements:
         LOGGER.debug("add attachement from file " + str(attachement))
-        add_attachment(message, attachement)
+        add_attachment(message, attachement, os.path.basename(attachement))
     
     
     smtp = smtplib.SMTP(host, port)
@@ -101,13 +103,14 @@ def send_email(to_addrs, subject, text_body, html_body=None, attachements=[]):
     
     
     
-def add_attachment(message, filename):
+def add_attachment(message, filename, name=None):
     """
     Add an attachment to 'message'.
     Try to find its type in order to properly set its header.
     
     @param message: the given message to add the file to
     @param filename: the attachement file path
+    @param name: an optional name for the attachment
     """
     
     ctype, encoding = mimetypes.guess_type(filename)
@@ -138,5 +141,5 @@ def add_attachment(message, filename):
         # Encode the payload using Base64
         encoders.encode_base64(attachement)
     # Set the filename parameter
-    attachement.add_header('Content-Disposition', 'attachment', filename=filename)
+    attachement.add_header('Content-Disposition', 'attachment', filename=name or filename)
     message.attach(attachement)
