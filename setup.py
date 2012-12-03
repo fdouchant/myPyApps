@@ -27,7 +27,7 @@ setup(
     platforms = ["any"],
     keywords='framework tools',
     url="http://fabricedouchant.com/spip.php?article52&lang=en",
-    packages=['myPyApps'],
+    packages=['myPyApps', 'myPyApps.helpers'],
     package_data={
        'myPyApps': ['config/*.default'],
     },
