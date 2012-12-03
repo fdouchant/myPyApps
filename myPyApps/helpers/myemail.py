@@ -75,11 +75,11 @@ def send_email(to_addrs, subject, text_body=None, html_body=None, attachements=[
     # the HTML message, is best and preferred.
     if text_body:
         LOGGER.debug("add text body")
-        part1 = MIMEText(text_body, 'plain')
+        part1 = MIMEText(text_body.encode('utf_8', 'replace'), 'plain', 'utf_8')
         message.attach(part1)
     if html_body:
         LOGGER.debug("add html body")
-        part2 = MIMEText(html_body, 'html')
+        part2 = MIMEText(html_body.encode('utf_8', 'replace'), 'html', 'utf_8')
         message.attach(part2)
         
         
