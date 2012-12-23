@@ -26,7 +26,7 @@ class MaxLevelFilter(logging.Filter):
     Allow to define a max_level. This will emit logs only in range [level, maxlevel]
     """
     def __init__(self, name='', max_level=None):
-        super(MaxLevelFilter, self).__init__(name)
+        logging.Filter.__init__(self, name)
         self.max_level = max_level
         
     def filter(self, rec):
@@ -41,7 +41,7 @@ class StreamMaxLevelHandler(logging.StreamHandler):
     Emit logs only in range [level, maxlevel]
     """
     def __init__(self, stream=None, max_level=None):
-        super(StreamMaxLevelHandler, self).__init__(stream)
+        logging.StreamHandler.__init__(self, stream)
         self.addFilter(MaxLevelFilter('maxlevelfilter', max_level))
         
 
