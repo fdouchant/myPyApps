@@ -1,5 +1,6 @@
 *.pyc
 .*project
+.*settings
 dist
 build
 MANIFEST
