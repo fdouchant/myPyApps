@@ -51,14 +51,14 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
     will log into a lower level (not just displaying the error like in SMTPHandler)
     """
     def __init__(self, *args, **kwargs):
-        super(MySMTPHandler, self).__init__(*args, **kwargs)
+        logging.handlers.SMTPHandler.__init__(self, *args, **kwargs)
         self.first_error = True
     
     def handleError(self, *args, **kwargs):
         # don't spam in logs
         if self.first_error:
             # just try to use lowest level
-            super(MySMTPHandler, self).handleError(*args, **kwargs)
+            logging.handlers.SMTPHandler.handleError(self, *args, **kwargs)
             try:
                 import sys, traceback
                 print >> sys.stderr, ("Error with SMTP handler. Please check your configuration file. "

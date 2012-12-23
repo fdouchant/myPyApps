@@ -49,7 +49,7 @@ class MyConfigParser(SafeConfigParser, object):
         
         @raise MyConfigParserException: if no default configuration found. 
         """
-        super(MyConfigParser, self).__init__()
+        SafeConfigParser.__init__(self)
         
         self.name = name
         self.cfg_filename = name + cfg_ext
@@ -129,7 +129,7 @@ class MyConfigParser(SafeConfigParser, object):
         @param with_default: if with_default is True then items from default will be used in result (same behavior than configParser)
         If false, default items will be skipped
         """
-        all_items = super(MyConfigParser, self).items(section)
+        all_items = SafeConfigParser.items(self, section)
         if with_default:
             return all_items
         return list(set(all_items)-set(self.defaults().items()))
