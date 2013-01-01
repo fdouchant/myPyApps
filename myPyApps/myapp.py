@@ -47,10 +47,7 @@ class MyApp():
         # init logging
         mylogging.configure_logging(logging_email)
         
-        module_path = join(dirname(__import__(self.__module__).__file__), 'config')
-        LOGGER.debug("add module configuration folder %r" % module_path)
-        self.config_path = config_path + [module_path]
-        
+        self.config_path = config_path
         LOGGER.debug("initialize application with config_path %r and config_filter %r" % (self.config_path, config_filter))
         self.CONFIGS = {}
         self.CONFIG = None
