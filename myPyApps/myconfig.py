@@ -27,7 +27,7 @@ class MyConfigParserException(Exception):
         return "[%s] %s" % (self.name, Exception.__str__(self))
 
 # remove duplicate path
-DEFAULT_PATH = [join(os.getenv('USERPROFILE') or os.getenv('HOME'), '.config'), join(abspath(dirname(sys.argv[0])), "config")]
+DEFAULT_PATH = [join(os.getenv('USERPROFILE') or os.getenv('HOME'), '.config'), join(abspath(dirname(sys.argv[0])), "config"), join(dirname(__file__), "config")]
 DEFAULT_CFG_EXT = '.cfg'
 DEFAULT_DEFAULT_EXT = '.default'
 

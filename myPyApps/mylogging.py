@@ -111,7 +111,7 @@ def getLogger(name=None):
     """
     return logging.getLogger(name)
         
-DEFAULT_CONFIG = myconfig.MyConfigParser('logging', config_path=myconfig.DEFAULT_PATH+[join(dirname(__file__), "config")])
+DEFAULT_CONFIG = myconfig.MyConfigParser('logging', config_path=myconfig.DEFAULT_PATH)
 
 def configure_logging(mail=True, config=DEFAULT_CONFIG):
     """
