@@ -130,10 +130,13 @@ def configure_logging(mail=True, config=DEFAULT_CONFIG):
     result.seek(0)
     try:
         logging.config.fileConfig(result, disable_existing_loggers=False)
+    except IOError as e:
+        logging.exception("Error configuring mylogging: %s. Please check that log folder exists." % e)
+        raise e
     except Exception as e:
         # already default format
         logging.exception("Error configuring mylogging: " + str(e))
-        return
+        raise e
     
     for h in filter(lambda h: isinstance(h, logging.handlers.RotatingFileHandler), logging.root.handlers):
         try:
