@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
 
 import os, glob, sys
-from os.path import basename, dirname, join, splitext
+from os.path import basename, splitext
 
 from myPyApps import myconfig, mylogging
 
