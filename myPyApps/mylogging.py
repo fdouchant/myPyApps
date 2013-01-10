@@ -12,7 +12,7 @@ from myPyApps import mylogging
 mylogging.configure_logging()
 """
 
-import logging, logging.handlers, logging.config, StringIO
+import logging, logging.handlers, logging.config, StringIO, sys
 
 from os.path import join, dirname
 
@@ -113,11 +113,12 @@ def getLogger(name=None):
         
 DEFAULT_CONFIG = myconfig.MyConfigParser('logging', config_path=myconfig.DEFAULT_PATH)
 
-def configure_logging(mail=True, config=DEFAULT_CONFIG):
+def configure_logging(mail=True, verbose=False, config=DEFAULT_CONFIG):
     """
     Method to use to init logging, then you may use logging usually.
     
     @param mail: set to False to disable email logging
+    @param verbose: set to True to force stdout to log DEBUG messages
     @param config: to give another way to find logging configuration. 
     Default is to take logging.default and user defined logging.cfg in HOME, script, module dir
     """
@@ -144,6 +145,12 @@ def configure_logging(mail=True, config=DEFAULT_CONFIG):
         except WindowsError:
             logging.error("Could not rollover " + str(h))
             pass
+    
+    if verbose:
+        logging.info("Force stdout to display debug messages")
+        for h in filter(lambda h: isinstance(h, StreamMaxLevelHandler), logging.root.handlers):
+            if h.stream == sys.stdout:
+                h.setLevel(logging.DEBUG)
     
     # disable mail
     if not mail:

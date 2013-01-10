@@ -3,8 +3,17 @@ import unittest
 import mypackage
 
 from myPyApps import myapp, mylogging
+import optparse
 
 class TestMyApp(unittest.TestCase):
+	
+	def setUp(self):
+		unittest.TestCase.setUp(self)
+		class MyTest(myapp.MyApp):
+			def main(self, text):
+				return text
+		self.test_class = MyTest	
+		self.test_instance = MyTest()
 	
 	def test_simple_implementation(self):
 		class MyTest(myapp.MyApp):
@@ -37,5 +46,18 @@ class TestMyApp(unittest.TestCase):
 		test = MyTest()
 		self.assertEqual(test.run("Hello world !"), "Hello world !")
 		
+	def test_options_fail(self):
+		try:
+			self.assertRaises(Exception, self.test_class(options="won't work"))
+		except: 
+			pass
+		else:
+			self.fail("Test should have failed")
+		
+		
+	def  test_options_not_myoptionparser(self):
+		self.test_class(options=optparse.OptionParser().parse_args()[0])
+
+			
 if __name__ == "__main__":
 	unittest.main()
