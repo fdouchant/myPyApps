@@ -20,9 +20,8 @@ if __name__ == "__main__":
 
 import os, glob, sys
 from os.path import basename, splitext, join, dirname
-import optparse
 
-from myPyApps import myconfig, mylogging, myoptionparser
+from myPyApps import myconfig, mylogging
 
 LOGGER = mylogging.getLogger(__name__)
 
@@ -49,8 +48,8 @@ class MyApp():
         @param logging_email: to turn on or off email logging
         @param options: options that will be used to configure the framework. Can be either:
             - a dictionary (empty for default values).
-            - an optparse.Values instance. Tippicaly  using myoptionparser (e.g myoptionparser.MyOptionParser.parse_args())
-            Handled keys/options are: 'dry_run' (default: False), 'verbose' (default: False) and 'config' (default: []). If a key/option is missing, program will take the default
+            - a Namespace instance. Tipicaly  using myargumentparser (e.g myargumentparser.MyArgumentParser.parse_args())
+            Handled keys/options are: 'dry_run' (default: False), 'verbose' (default: False) and 'config' (default: []). If a key/option is missing, default will be used
         """
         
         self.options = options
@@ -110,12 +109,21 @@ class MyApp():
         
         Returns the value for key or default if not found (default is None by default) 
         """
-        if hasattr(self.options, 'get'):
-            return self.options.get(key, default)
-        elif hasattr(self.options, 'ensure_value'):
-            return self.options.ensure_value(key, default)
+        if hasattr(self.options, '__getattribute__'):
+            try:
+                result = self.options.__getattribute__(key)
+            except AttributeError:
+                LOGGER.warn('Could not find option %s, use default %s' % (key, default))
+                result = default
+        elif hasattr(self.options, '__getitem__'):
+            try:
+                result = self.options.__getitem__(key)
+            except KeyError:
+                LOGGER.warn('Could not find option %s, use default %s' % (key, default))
+                result = default
         else:
             raise Exception("options type %s doesn't support any getter method" % self.options.__class__)
+        return result
     
     def main(self):
         """

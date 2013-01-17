@@ -3,26 +3,26 @@
 @contact: vamp.higher@gmail.com
 @license: GNU GPLv3 (LICENSE.txt)
 
-myoptionparser is wrapper class over optparse.OptionParser that sets some defaults options (dry_run, verbose, config).
+myargparse is wrapper package over argparse that sets some defaults options (dry_run, verbose, config).
 
 Example:
 
-from myPyApps import myoptionparser
+from myPyApps import myargparse
 
-parser = myoptionparser.MyOptionParser()
-(options, args) = parser.parse_args()
+parser = myargparse.MyArgumentParser()
+namespace = parser.parse_args()
 """
 
 
-from optparse import OptionParser
+from argparse import ArgumentParser
 from myPyApps import mylogging
 import os
 
 LOGGER = mylogging.getLogger(__name__)
 
-class MyOptionParser(OptionParser):
+class MyArgumentParser(ArgumentParser):
     
-    def parse_args(self, args=None, values=None):
+    def parse_args(self, args=None, namespace=None):
         """
         Initialize and parse args with default options then validate those default options.
         The default options: 
@@ -34,19 +34,19 @@ class MyOptionParser(OptionParser):
         """
         
         # initialize
-        self.add_option("--dry_run", action="store_true", dest="dry_run", default=False, 
+        self.add_argument("--dry_run", action="store_true", dest="dry_run", default=False, 
                         help="run in dry mode. In case of use as myapp init parser parameter, it disables logging emails")
-        self.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, 
+        self.add_argument("-v", "--verbose", action="store_true", dest="verbose", default=False, 
                         help="run in verbose mode. In case of use as myapp init parser parameter, it sets stdout to debug")
-        self.add_option("-c", "--config", action="append", dest="config", default=[], 
+        self.add_argument("-c", "--config", action="append", dest="config", default=[], 
                         help="run in dry mode. In case of use as myapp init parser parameter, it sets a new path to the config path (with highest priority)")
         
         # parse
-        (options, args) = OptionParser.parse_args(self, args, values)
+        namespace = ArgumentParser.parse_args(self, args=None, namespace=None)
         
         # validate
-        for config in options.ensure_value('config', []):
+        for config in namespace.config:
             if not os.path.isdir(config):
                 self.error("config options must be valid folders. %r is not" % config)
                 
-        return (options, args)
+        return namespace
