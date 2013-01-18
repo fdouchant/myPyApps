@@ -42,11 +42,11 @@ class MyArgumentParser(ArgumentParser):
                         help="run in dry mode. In case of use as myapp init parser parameter, it sets a new path to the config path (with highest priority)")
         
         # parse
-        namespace = ArgumentParser.parse_args(self, args=None, namespace=None)
+        args = ArgumentParser.parse_args(self, args=None, namespace=None)
         
         # validate
-        for config in namespace.config:
+        for config in args.config:
             if not os.path.isdir(config):
                 self.error("config options must be valid folders. %r is not" % config)
                 
-        return namespace
+        return args

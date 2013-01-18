@@ -105,24 +105,23 @@ class MyApp():
         Get the option value for the given key.
         
         @param key: the key to look for
-        @param default: the default value if key is not found
+        @param default: the default value if key is not found. If set to None and the option it will throw an AttributeError exception
+        @raise AttributeError: if the key is not found and default is None
         
         Returns the value for key or default if not found (default is None by default) 
         """
-        if hasattr(self.options, '__getattribute__'):
-            try:
+        try:
+            if hasattr(self.options, '__getattribute__'):
                 result = self.options.__getattribute__(key)
-            except AttributeError:
-                LOGGER.warn('Could not find option %s, use default %s' % (key, default))
-                result = default
-        elif hasattr(self.options, '__getitem__'):
-            try:
+            elif hasattr(self.options, '__getitem__'):
                 result = self.options.__getitem__(key)
-            except KeyError:
-                LOGGER.warn('Could not find option %s, use default %s' % (key, default))
-                result = default
-        else:
-            raise Exception("options type %s doesn't support any getter method" % self.options.__class__)
+            else:
+                raise Exception("options type %s doesn't support any getter method" % self.options.__class__)
+        except (AttributeError, KeyError):
+            if default == None:
+                raise
+            LOGGER.warn('Could not find option %r, use default %r' % (key, default))
+            result = default
         return result
     
     def main(self):
