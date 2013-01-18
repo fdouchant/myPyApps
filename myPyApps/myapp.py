@@ -52,6 +52,7 @@ class MyApp():
             Handled keys/options are: 'dry_run' (default: False), 'verbose' (default: False) and 'config' (default: []). If a key/option is missing, default will be used
         """
         
+        self.config_default = config_default
         self.options = options
         
         # use options to initialize config_path
@@ -67,7 +68,7 @@ class MyApp():
         mylogging.configure_logging(mail=not self.get_option('dry_run', False) and logging_email, verbose=self.get_option('verbose', False), config_path=self.config_path)
         
         LOGGER.info("Application configuration")
-        LOGGER.debug("initialize application with config_path %r and config_filter %r" % (self.config_path, config_filter))
+        LOGGER.debug("initialize application with config_default %r, config_path %r and config_filter %r" % (self.config_default, self.config_path, config_filter))
         self.CONFIGS = {}
         self.CONFIG = None
         self.DEFAULTS = None
