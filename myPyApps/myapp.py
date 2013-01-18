@@ -62,6 +62,8 @@ class MyApp():
         module_path = join(dirname(__import__(self.__module__).__file__), 'config')
         LOGGER.debug("add module configuration folder %r" % module_path)
         self.config_path.append(module_path)
+        LOGGER.debug("remove duplicate configuration path")
+        self.config_path = list(set(self.config_path))
         
         # init logging. To send emails, dry_run must be false AND logging_email param must be true 
         LOGGER.info("Logging configuration")
