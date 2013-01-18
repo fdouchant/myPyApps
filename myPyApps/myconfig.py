@@ -56,19 +56,19 @@ class MyConfigParser(SafeConfigParser, object):
         self.default_filename = name + default_ext
         self.config_path = config_path
         if not hasattr(self.config_path, "__iter__"):
-            LOGGER.debug("convert single config_path to set")
+            LOGGER.debug("[%s] convert single config_path to set" % self.name)
             self.config_path = (config_path, )
         
-        LOGGER.debug("remove duplicate configuration path")
+        LOGGER.debug("[%s] remove duplicate configuration path" % self.name)
         self.config_path = list(set(self.config_path))
         
-        LOGGER.debug("find and load default cfg file")
+        LOGGER.debug("[%s] find and load default cfg file" % self.name)
         # in list order to respect path importance
         for path in self.config_path:
             full_path = join(path, self.default_filename)
             if isfile(full_path):
                 self.default_path = full_path
-                LOGGER.debug("default_path = " + self.default_path)
+                LOGGER.debug("[%s] default_path = %s" % (self.name, self.default_path))
                 break
         else:
             raise MyConfigParserException(self.name, "Couldn't find default config file")
@@ -80,7 +80,7 @@ class MyConfigParser(SafeConfigParser, object):
         """
         Reload configuration
         """
-        LOGGER.debug("clean config")
+        LOGGER.debug("[%s] clean config" % self.name)
         for section in self.sections():
             if not self.remove_section(section):
                 raise MyConfigParserException(self.name, "Couldn't clean section %r" % section)
@@ -89,14 +89,14 @@ class MyConfigParser(SafeConfigParser, object):
         LOGGER.info("[%s] Load DEFAULT file %r" % (self.name, self.default_path))
         self.readfp(open(self.default_path))
 
-        LOGGER.debug("find and load user cfg files")
+        LOGGER.debug("[%s] find and load user cfg files" % self.name)
         # in reverse order to respect path importance order
         for path in reversed(self.config_path):
             full_path = join(path, self.cfg_filename)
             if isfile(full_path):
                 LOGGER.info("[%s] Load config file %r" % (self.name, full_path))
                 self.read(full_path)
-        LOGGER.debug("done reload")
+        LOGGER.debug("[%s] done reload" % self.name)
                 
     def check_override_all(self):
         """
@@ -105,18 +105,18 @@ class MyConfigParser(SafeConfigParser, object):
         default_cfg = SafeConfigParser()
         default_cfg.readfp(open(self.default_path))
         
-        LOGGER.debug("test section differences")
+        LOGGER.debug("[%s] test section differences" % self.name)
         diff_sections = set(self.sections()) - set(default_cfg.sections())
         # should not have more section in user config
         if diff_sections:
-            LOGGER.warn("%r sections are not in default" % diff_sections)
+            LOGGER.warn("[%s] %r sections are not in default" % (self.name, diff_sections))
             return False
-        LOGGER.debug("for each section, test option differences")
+        LOGGER.debug("[%s] for each section, test option differences" % self.nam)
         for section in self.sections():
             diff_options = set(self.options(section)) - set(default_cfg.options(section))
             # should not have more options in user config
             if diff_options:
-                LOGGER.warn("%r options are not in default section %r" % (diff_options, section))
+                LOGGER.warn("[%s] %r options are not in default section %r" % (self.name, diff_options, section))
                 return False
         # all good
         return True
