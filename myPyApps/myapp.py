@@ -92,7 +92,7 @@ class MyApp():
                 self.DEFAULTS = self.CONFIG.defaults()
                 
         LOGGER.debug("Add logging in configs")
-        self.CONFIGS['logging'] = mylogging.DEFAULT_CONFIG
+        self.CONFIGS['logging'] = mylogging.MyLogger.default_config
         
         if not self.CONFIGS:
             LOGGER.warn("No configuration loaded")

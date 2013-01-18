@@ -12,10 +12,7 @@ from myPyApps import mylogging
 mylogging.configure_logging()
 """
 
-import logging, logging.handlers, logging.config, StringIO, sys
-
-from os.path import join, dirname
-
+import logging.handlers, logging.config, StringIO, sys
 
 from myPyApps import myconfig
 
@@ -111,9 +108,7 @@ def getLogger(name=None):
     """
     return logging.getLogger(name)
         
-DEFAULT_CONFIG = myconfig.MyConfigParser('logging', config_path=myconfig.DEFAULT_PATH)
-
-def configure_logging(mail=True, verbose=False, config=DEFAULT_CONFIG):
+def configure_logging(mail=True, verbose=False, config=None):
     """
     Method to use to init logging, then you may use logging usually.
     
@@ -123,10 +118,10 @@ def configure_logging(mail=True, verbose=False, config=DEFAULT_CONFIG):
     Default is to take logging.default and user defined logging.cfg in HOME, script, module dir
     """
     # override default config for further use
-    MyLogger.default_config = config
+    MyLogger.default_config = config or myconfig.MyConfigParser('logging', config_path=myconfig.DEFAULT_PATH)
     
     result = StringIO.StringIO()
-    config.write(result)
+    MyLogger.default_config.write(result)
     # rewind io
     result.seek(0)
     try:
