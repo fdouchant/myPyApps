@@ -108,7 +108,7 @@ def getLogger(name=None):
     """
     return logging.getLogger(name)
         
-def configure_logging(mail=True, verbose=False, config=None):
+def configure_logging(mail=True, verbose=False, config_path=None):
     """
     Method to use to init logging, then you may use logging usually.
     
@@ -118,7 +118,7 @@ def configure_logging(mail=True, verbose=False, config=None):
     Default is to take logging.default and user defined logging.cfg in HOME, script, module dir
     """
     # override default config for further use
-    MyLogger.default_config = config or myconfig.MyConfigParser('logging', config_path=myconfig.DEFAULT_PATH)
+    MyLogger.default_config = myconfig.MyConfigParser('logging', config_path=config_path or myconfig.DEFAULT_PATH)
     
     result = StringIO.StringIO()
     MyLogger.default_config.write(result)

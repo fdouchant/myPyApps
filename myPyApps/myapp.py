@@ -53,9 +53,7 @@ class MyApp():
         """
         
         self.options = options
-        # init logging. To send emails, dry_run must be false AND logging_email param must be true 
-        mylogging.configure_logging(not self.get_option('dry_run', False) and logging_email, self.get_option('verbose', False))
-
+        
         # use options to initialize config_path
         self.config_path = self.get_option('config', [])
         # add all other config_path
@@ -63,6 +61,10 @@ class MyApp():
         module_path = join(dirname(__import__(self.__module__).__file__), 'config')
         LOGGER.debug("add module configuration folder %r" % module_path)
         self.config_path.append(module_path)
+        
+        # init logging. To send emails, dry_run must be false AND logging_email param must be true 
+        LOGGER.info("Logging configuration")
+        mylogging.configure_logging(mail=not self.get_option('dry_run', False) and logging_email, verbose=self.get_option('verbose', False), config_path=self.config_path)
         
         LOGGER.debug("initialize application with config_path %r and config_filter %r" % (self.config_path, config_filter))
         self.CONFIGS = {}
@@ -91,9 +93,6 @@ class MyApp():
                 self.CONFIG = self.CONFIGS[name]
                 self.DEFAULTS = self.CONFIG.defaults()
                 
-        LOGGER.debug("Add logging in configs")
-        self.CONFIGS['logging'] = mylogging.MyLogger.default_config
-        
         if not self.CONFIGS:
             LOGGER.warn("No configuration loaded")
         if not self.CONFIG:
