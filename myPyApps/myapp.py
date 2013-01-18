@@ -66,6 +66,7 @@ class MyApp():
         LOGGER.info("Logging configuration")
         mylogging.configure_logging(mail=not self.get_option('dry_run', False) and logging_email, verbose=self.get_option('verbose', False), config_path=self.config_path)
         
+        LOGGER.info("Application configuration")
         LOGGER.debug("initialize application with config_path %r and config_filter %r" % (self.config_path, config_filter))
         self.CONFIGS = {}
         self.CONFIG = None
