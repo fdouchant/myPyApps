@@ -35,7 +35,7 @@ def send_email(to_addrs, subject, text_body=None, html_body=None, attachements=[
             to_addrs = [ to_addrs ]
     
     # unpack logging smtp handler configuration
-    args = mylogging.DEFAULT_CONFIG.get('handler_mail', 'args', raw=True)
+    args = LOGGER.default_config.get('handler_mail', 'args', raw=True)
     LOGGER.debug("using smtp configuration: " + args)
     
     eval_args = eval(args, vars(logging))
