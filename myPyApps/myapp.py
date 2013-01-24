@@ -21,7 +21,7 @@ if __name__ == "__main__":
 import os, glob, sys
 from os.path import basename, splitext, join, dirname
 
-from myPyApps import myconfig, mylogging
+from myPyApps import myconfig, mylogging, myargparse
 
 LOGGER = mylogging.getLogger(__name__)
 
@@ -56,7 +56,7 @@ class MyApp():
         self.options = options
         
         # use options to initialize config_path
-        self.config_path = self.get_option('config', [])
+        self.config_path = self.get_option(myargparse.CONFIG, [])
         # add all other config_path
         self.config_path.extend(config_path)
         module_path = join(dirname(__import__(self.__module__).__file__), 'config')
@@ -67,7 +67,7 @@ class MyApp():
         
         # init logging. To send emails, dry_run must be false AND logging_email param must be true 
         LOGGER.info("Logging configuration")
-        mylogging.configure_logging(mail=not self.get_option('dry_run', False) and logging_email, verbose=self.get_option('verbose', False), config_path=self.config_path)
+        mylogging.configure_logging(mail=not self.get_option(myargparse.DRY_RUN, False) and logging_email, verbose=self.get_option(myargparse.VERBOSE, False), config_path=self.config_path)
         
         LOGGER.info("Application configuration")
         LOGGER.debug("initialize application with config_default %r, config_path %r and config_filter %r" % (self.config_default, self.config_path, config_filter))
@@ -102,6 +102,14 @@ class MyApp():
         if not self.CONFIG:
             LOGGER.warn("No default configuration loaded")
             self.DEFAULTS = {}
+            
+        if self.get_option(myargparse.DUMP_CONFIG):
+            for key, config in self.CONFIGS.iteritems():
+                stars = "*" * 10
+                print "%s %s %s\n" % (stars, key, stars)
+                print config
+                print
+            sys.exit(1)
     
     def get_option(self, key, default=None):
         """
