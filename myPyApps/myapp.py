@@ -49,7 +49,7 @@ class MyApp():
         @param options: options that will be used to configure the framework. Can be either:
             - a dictionary (empty for default values).
             - a Namespace instance. Tipicaly  using myargumentparser (e.g myargumentparser.MyArgumentParser.parse_args())
-            Handled keys/options are: 'dry_run' (default: False), 'verbose' (default: False) and 'config' (default: []). If a key/option is missing, default will be used
+            Handled keys/options are: 'quiet' (default: False), 'verbose' (default: False) and 'config' (default: []). If a key/option is missing, default will be used
         """
         
         self.config_default = config_default
@@ -65,9 +65,9 @@ class MyApp():
         LOGGER.debug("remove duplicate configuration path")
         self.config_path = list(set(self.config_path))
         
-        # init logging. To send emails, dry_run must be false AND logging_email param must be true 
+        # init logging. To send emails, quiet must be false AND logging_email param must be true 
         LOGGER.info("Logging configuration")
-        mylogging.configure_logging(mail=not self.get_option(myargparse.DRY_RUN, False) and logging_email, verbose=self.get_option(myargparse.VERBOSE, False), config_path=self.config_path)
+        mylogging.configure_logging(mail=not self.get_option(myargparse.QUIET, False) and logging_email, verbose=self.get_option(myargparse.VERBOSE, False), config_path=self.config_path)
         
         LOGGER.info("Application configuration")
         LOGGER.debug("initialize application with config_default %r, config_path %r and config_filter %r" % (self.config_default, self.config_path, config_filter))

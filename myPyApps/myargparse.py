@@ -3,7 +3,7 @@
 @contact: vamp.higher@gmail.com
 @license: GNU GPLv3 (LICENSE.txt)
 
-myargparse is wrapper package over argparse that sets some defaults options (dry_run, verbose, config).
+myargparse is wrapper package over argparse that sets some defaults options (quiet, verbose, config).
 
 Example:
 
@@ -20,7 +20,7 @@ import os
 
 LOGGER = mylogging.getLogger(__name__)
 
-DRY_RUN = "dry-run"
+QUIET = "quiet"
 VERBOSE = "verbose"
 CONFIG = "config"
 DUMP_CONFIG = "dump-config"
@@ -32,7 +32,7 @@ class MyArgumentParser(ArgumentParser):
         """
         Initialize and parse args with default options then validate those default options.
         The default options: 
-            - dry_run: disable logging emails
+            - quiet: disable logging emails
             - verbose: set stdout to debug
             - config: set a new path to the config path (with highest priority)
         
@@ -40,7 +40,7 @@ class MyArgumentParser(ArgumentParser):
         """
         
         # initialize
-        self.add_argument("--dry-run", action="store_true", dest=DRY_RUN, default=False, 
+        self.add_argument("-q", "--quiet", action="store_true", dest=QUIET, default=False, 
                         help="run in dry mode. In case of use as myapp init parser parameter, it disables logging emails")
         self.add_argument("-v", "--verbose", action="store_true", dest=VERBOSE, default=False, 
                         help="run in verbose mode. In case of use as myapp init parser parameter, it sets stdout to debug")
