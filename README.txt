@@ -1,4 +1,4 @@
 @Author: Fabrice Douchant
 @Email: vamp.higher@gmail.com
 
-http://www.fabrice.douchant.com/spip.php?article52&lang=en
+http://fabrice.douchant.com/mypyapps-framework-for-python-developments?lang=en
