@@ -140,12 +140,19 @@ class MyApp():
         The function to override
         """
         raise NotImplementedError()
+
+    def init(self):
+        """
+        The function to initialize things before the self.main() method is called
+        """
+        pass
     
     def run(self, *args, **kwargs):
         """
         The function run the main() function with its arguments and log unhandled exceptions
         """
         try:
+            self.init()
             return self.main(*args, **kwargs)
         except Exception as e:
             LOGGER.exception("Exception raised: " + str(e))
