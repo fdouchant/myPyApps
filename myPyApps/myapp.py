@@ -106,9 +106,8 @@ class MyApp():
         if self.get_option(myargparse.DUMP_CONFIG):
             for key, config in self.CONFIGS.iteritems():
                 stars = "*" * 10
-                print "%s %s %s\n" % (stars, key, stars)
-                print config
-                print
+                print("%s %s %s\n" % (stars, key, stars))
+                print(config, "")
             sys.exit(1)
     
     def get_option(self, key, default=None):

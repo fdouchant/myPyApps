@@ -1,4 +1,4 @@
-__version__ = (1, 0, 0)
+__version__ = (2, 0, 0)
 
 import os, glob, shutil
 from os.path import isfile, isdir

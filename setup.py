@@ -2,12 +2,12 @@ from setuptools import setup, find_packages
 
 try:
     from html2rest import html2rest
-    from StringIO import StringIO
-    import urllib
+    from io import StringIO
+    from urllib.request import urlopen
     
     # read content of article (plain html template) and convert to restructuredText for long_description
     stringIO = StringIO()
-    html_content = urllib.urlopen("http://fabrice.douchant.com/mypyapps-framework-for-python-developments?lang=en").read()
+    html_content = urlopen("http://fabrice.douchant.com/mypyapps-framework-for-python-developments?lang=en").read()
     html2rest(html_content, writer=stringIO)
     long_description = stringIO.getvalue()
 except (ImportError, IOError):
