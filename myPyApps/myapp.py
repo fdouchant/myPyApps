@@ -122,29 +122,36 @@ class MyApp():
         """
         try:
             if hasattr(self.options, '__getattribute__'):
-                result = self.options.__getattribute__(key)
-            elif hasattr(self.options, '__getitem__'):
-                result = self.options.__getitem__(key)
-            else:
-                raise Exception("options type %s doesn't support any getter method" % self.options.__class__)
-        except (AttributeError, KeyError):
-            if default == None:
-                raise
+                return self.options.__getattribute__(key)
+        except AttributeError:
+            pass
+        try:
+            if hasattr(self.options, '__getitem__'):
+                return self.options.__getitem__(key)
+        except KeyError:
             LOGGER.warn('Could not find option %r, use default %r' % (key, default))
-            result = default
-        return result
-    
+            return default
+        # if couldn't find anything
+        raise Exception("options type %s doesn't support any getter method" % self.options.__class__)
+
     def main(self):
         """
         The function to override
         """
         raise NotImplementedError()
+
+    def init(self):
+        """
+        The function to initialize things before the self.main() method is called
+        """
+        pass
     
     def run(self, *args, **kwargs):
         """
         The function run the main() function with its arguments and log unhandled exceptions
         """
         try:
+            self.init()
             return self.main(*args, **kwargs)
         except Exception as e:
             LOGGER.exception("Exception raised: " + str(e))
