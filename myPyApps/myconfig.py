@@ -8,8 +8,8 @@ It is based on convention over configuration.
 """
 
 
-from ConfigParser import SafeConfigParser
-import os, sys, StringIO
+from configparser import ConfigParser
+import os, sys, io
 from os.path import dirname, abspath, join, isfile
 
 # will be used before mylogging initialization
@@ -31,7 +31,7 @@ DEFAULT_PATH = [join(os.getenv('USERPROFILE') or os.getenv('HOME'), '.config'), 
 DEFAULT_CFG_EXT = '.cfg'
 DEFAULT_DEFAULT_EXT = '.default'
 
-class MyConfigParser(SafeConfigParser, object):
+class MyConfigParser(ConfigParser, object):
     """
     Main class to build your configuration. It is an extension of SafeConfigParser. 
     """
@@ -49,7 +49,7 @@ class MyConfigParser(SafeConfigParser, object):
         
         @raise MyConfigParserException: if no default configuration found. 
         """
-        SafeConfigParser.__init__(self)
+        ConfigParser.__init__(self)
         
         self.name = name
         self.cfg_filename = name + cfg_ext
@@ -102,8 +102,8 @@ class MyConfigParser(SafeConfigParser, object):
         """
         Return true if user config override properly the default on (no extra variables).
         """
-        default_cfg = SafeConfigParser()
-        default_cfg.readfp(open(self.default_path))
+        default_cfg = ConfigParser()
+        default_cfg.read_file(open(self.default_path))
         
         LOGGER.debug("[%s] test section differences" % self.name)
         diff_sections = set(self.sections()) - set(default_cfg.sections())
@@ -129,12 +129,12 @@ class MyConfigParser(SafeConfigParser, object):
         @param with_default: if with_default is True then items from default will be used in result (same behavior than configParser)
         If false, default items will be skipped
         """
-        all_items = SafeConfigParser.items(self, section)
+        all_items = ConfigParser.items(self, section)
         if with_default:
             return all_items
         return list(set(all_items)-set(self.defaults().items()))
 
     def __str__(self):
-        result = StringIO.StringIO()
+        result = io.StringIO()
         self.write(result)
         return result.getvalue()

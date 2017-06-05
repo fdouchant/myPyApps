@@ -12,7 +12,7 @@ from myPyApps import mylogging
 mylogging.configure_logging()
 """
 
-import logging.handlers, logging.config, StringIO, sys
+import logging.handlers, logging.config, io, sys
 
 from myPyApps import myconfig
 
@@ -120,7 +120,7 @@ def configure_logging(mail=True, verbose=False, config_path=None):
     # override default config for further use
     MyLogger.default_config = myconfig.MyConfigParser('logging', config_path=config_path or myconfig.DEFAULT_PATH)
     
-    result = StringIO.StringIO()
+    result = io.StringIO()
     MyLogger.default_config.write(result)
     # rewind io
     result.seek(0)
